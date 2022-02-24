@@ -33,7 +33,7 @@ var loadTasks = function() {
 
   // loop over object properties
   $.each(tasks, function(list, arr) {
-    
+    console.log(list, arr);
     // then loop over sub-array
     arr.forEach(function(task) {
       createTask(task.text, task.date, list);
@@ -44,6 +44,8 @@ var loadTasks = function() {
 var saveTasks = function() {
   localStorage.setItem("tasks", JSON.stringify(tasks));
 };
+
+
 
 
 // modal was triggered
@@ -86,7 +88,6 @@ $(".list-group").on("click", "p", function() {
   var text = $(this)
     .text()
     .trim();
-    
 
   // replace p element with a new textarea
   var textInput = $("<textarea>").addClass("form-control").val(text);
@@ -97,33 +98,30 @@ $(".list-group").on("click", "p", function() {
 });
 
 // editable field was un-focused
-$(".list.group").on("blur", "textarea", function() {
-// get current value of textarea
-var text = $(this)
-  .val()
-  .trim();
+$(".list-group").on("blur", "textarea", function() {
+  // get current value of textarea
+  var text = $(this).val();
 
-// get status type and position in the list
-var status = $(this)
+  // get status type and position in the list
+  var status = $(this)
     .closest(".list-group")
     .attr("id")
     .replace("list-", "");
-// get the task's position in the list of other li elements
-var index = $(this)
+  var index = $(this)
     .closest(".list-group-item")
     .index();
 
-// update task in array and re-save to localstorage
-tasks[status][index].text = text;
-saveTasks();
+  // update task in array and re-save to localstorage
+  tasks[status][index].text = text;
+  saveTasks();
 
-// recreate p element
-var taskP = $("<p>")
-  .addClass("m-1")
-  .text(text);
+  // recreate p element
+  var taskP = $("<p>")
+    .addClass("m-1")
+    .text(text);
 
-// replace text area with new content
-$(this).replaceWith(taskP);
+  // replace textarea with new content
+  $(this).replaceWith(taskP);
 });
 
 // due date was clicked
@@ -135,16 +133,16 @@ $(".list-group").on("click", "span", function() {
 
   // create new input element
   var dateInput = $("<input>")
-  .attr("type", "text")
-  .addClass("form-control")
-  .val(date);
+    .attr("type", "text")
+    .addClass("form-control")
+    .val(date);
   $(this).replaceWith(dateInput);
 
   // automatically bring up the calendar
   dateInput.trigger("focus");
 });
 
-// value of the due date was changed
+// value of due date was changed
 $(".list-group").on("blur", "input[type='text']", function() {
   var date = $(this).val();
 
@@ -161,7 +159,7 @@ $(".list-group").on("blur", "input[type='text']", function() {
   tasks[status][index].date = date;
   saveTasks();
 
-  // recreat span and insert in place of input element
+  // recreate span and insert in place of input element
   var taskSpan = $("<span>")
     .addClass("badge badge-primary badge-pill")
     .text(date);
